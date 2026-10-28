@@ -1,0 +1,72 @@
+/* Tema Claro — exemplo de tema que também ajusta alguns componentes. Copyright (c) 2026 Gabriel. Veja LICENSE. */
+:root {
+  --cf-bg: #f7f3ef;
+  --cf-surface: #ffffff;
+  --cf-raised: #efe8e2;
+  --cf-line: #e0d6cd;
+  --cf-overlay: rgba(40, 28, 22, 0.45);
+  --cf-text: #23181a;
+  --cf-muted: #6e6062;
+  --cf-faint: #9a8d8c;
+  --cf-accent-a: #ff7a2f;
+  --cf-accent-b: #d9143a;
+  --cf-accent: #e8432f;
+  --cf-done: #13a26b;
+  --cf-danger: #d62f45;
+  --cf-focus: #d9143a;
+  --cf-folder-sat: 62%;
+  --cf-folder-light: 44%;
+  --cf-shadow: 0 18px 50px rgba(60, 35, 20, 0.16);
+  color-scheme: light;
+}
+
+.app-header {
+  background: linear-gradient(to bottom, rgba(247, 243, 239, 0.92), transparent);
+}
+
+.bar {
+  background: rgba(35, 24, 26, 0.12);
+}
+
+.course-meta li {
+  background: rgba(35, 24, 26, 0.06);
+  border-color: rgba(35, 24, 26, 0.1);
+}
+
+.btn-glass {
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--cf-text);
+  border-color: rgba(35, 24, 26, 0.12);
+}
+
+.btn-glass:hover:not(:disabled) {
+  background: #ffffff;
+}
+
+.hero-subtitle {
+  color: var(--cf-muted);
+}
+
+/* O player continua escuro para não ofuscar o vídeo. */
+.player-view .btn-glass {
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.lessons-panel {
+  background: #17121a;
+  border-left-color: #2c2433;
+  --cf-text: #f6f0eb;
+  --cf-muted: #a89daa;
+  --cf-raised: #2c2433;
+  --cf-line: #3a3042;
+  color: #f6f0eb;
+}
+
+/* O logo tem texto branco: inverte só a luminosidade para ficar legível no fundo claro. */
+.logo-button img,
+.license-logo,
+.boot-view img {
+  filter: invert(1) hue-rotate(180deg) saturate(1.4);
+}

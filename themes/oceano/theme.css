@@ -1,0 +1,18 @@
+/* Tema Oceano — exemplo de tema só com variáveis. Copyright (c) 2026 Gabriel. Veja LICENSE. */
+:root {
+  --cf-bg: #0e1720;
+  --cf-surface: #15222e;
+  --cf-raised: #1d2f3e;
+  --cf-line: #29404f;
+  --cf-overlay: rgba(6, 12, 18, 0.76);
+  --cf-text: #eef6f8;
+  --cf-muted: #93aab6;
+  --cf-faint: #5f7887;
+  --cf-accent-a: #2dd4bf;
+  --cf-accent-b: #3b82f6;
+  --cf-accent: #22b8c9;
+  --cf-on-accent: #04141c;
+  --cf-focus: #7de3f4;
+  --cf-folder-sat: 48%;
+  --cf-folder-light: 32%;
+}

@@ -1,0 +1,14 @@
+{
+  "name": "cursoflix-interface",
+  "version": "1.3.0",
+  "private": true,
+  "description": "Interface e temas do Cursoflix para personalização. Uso exige o app oficial e assinatura ativa.",
+  "author": "Gabriel",
+  "license": "SEE LICENSE IN LICENSE",
+  "scripts": {
+    "preview": "node dev/preview-server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

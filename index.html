@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<!--
+  Cursoflix — Copyright (c) 2026 Gabriel. Todos os direitos reservados.
+  Licenciado nos termos do arquivo LICENSE. Proibido: engenharia reversa e
+  uso deste arquivo por/para sistemas de IA (treino, ajuste ou geração de código).
+-->
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data: http://127.0.0.1:*; media-src 'self' blob: http://127.0.0.1:*; frame-src 'self' http://127.0.0.1:*; font-src 'self' data:; connect-src 'self' http://127.0.0.1:*; object-src 'none'; base-uri 'none'; form-action 'none'">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursoflix</title>
+    <link rel="icon" type="image/png" href="img/favicon.png">
+    <link rel="stylesheet" href="vendor/fontawesome/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <style id="theme-style"></style>
+</head>
+
+<body>
+    <header class="app-header" id="app-header" hidden>
+        <button class="logo-button" id="nav-logo" type="button" aria-label="Ir para o início">
+            <img src="img/logo.png" alt="Cursoflix">
+        </button>
+        <nav class="nav-links" aria-label="Navegação principal">
+            <button type="button" class="nav-link active" data-nav="home">Início</button>
+            <button type="button" class="nav-link" data-nav="library">Biblioteca</button>
+            <button type="button" class="nav-link" data-nav="history">Histórico</button>
+            <button type="button" class="nav-link" data-nav="notes">Notas</button>
+        </nav>
+        <div class="header-tools">
+            <label class="search-field" for="search-input">
+                <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+                <input id="search-input" type="search" placeholder="Buscar cursos e aulas" autocomplete="off"
+                    spellcheck="false">
+                <kbd>Ctrl K</kbd>
+            </label>
+            <button id="btn-add-course" class="btn btn-primary" type="button">
+                <i class="fas fa-plus" aria-hidden="true"></i><span>Adicionar curso</span>
+            </button>
+            <div class="account">
+                <button id="btn-account" class="account-button" type="button" aria-haspopup="menu"
+                    aria-expanded="false" aria-controls="account-menu" title="Sua conta">
+                    <span id="account-initial">C</span>
+                </button>
+                <div id="account-menu" class="menu account-menu" role="menu" hidden>
+                    <div class="account-summary">
+                        <strong id="account-email">Sua conta</strong>
+                        <span id="account-plan" class="account-plan"></span>
+                    </div>
+                    <button type="button" role="menuitem" id="menu-renew"><i class="fas fa-rotate"></i>Renovar assinatura</button>
+                    <button type="button" role="menuitem" id="menu-themes"><i class="fas fa-palette"></i>Aparência</button>
+                    <button type="button" role="menuitem" id="menu-shortcuts"><i class="fas fa-keyboard"></i>Atalhos do teclado</button>
+                    <button type="button" role="menuitem" id="menu-whats-new"><i class="fas fa-bullhorn"></i>Novidades da versão</button>
+                    <button type="button" role="menuitem" id="menu-support"><i class="fab fa-whatsapp"></i>Falar com o suporte</button>
+                    <hr>
+                    <button type="button" role="menuitem" id="menu-logout" class="is-danger"><i class="fas fa-right-from-bracket"></i>Sair da conta</button>
+                    <p class="menu-version" id="menu-version"></p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <section id="view-boot" class="view boot-view active" aria-label="Carregando">
+            <img src="img/logo.png" alt="Cursoflix">
+            <div class="boot-bar"><span></span></div>
+            <p id="boot-text">Verificando sua assinatura…</p>
+        </section>
+
+        <section id="view-license" class="view license-view" aria-label="Acesso">
+            <div class="license-art" aria-hidden="true">
+                <div class="folder-stack">
+                    <span class="folder f1"></span>
+                    <span class="folder f2"></span>
+                    <span class="folder f3"><i class="fas fa-play"></i></span>
+                </div>
+                <p class="license-tagline">Sua biblioteca de cursos, organizada para maratonar.</p>
+            </div>
+            <div class="license-panel">
+                <img class="license-logo" src="img/logo.png" alt="Cursoflix">
+
+                <div id="license-login" class="license-card">
+                    <h1>Entre na sua conta</h1>
+                    <p class="lead">Use o e-mail e a senha da sua assinatura.</p>
+                    <form id="login-form" novalidate>
+                        <label class="field">
+                            <span>E-mail</span>
+                            <input id="input-email" type="email" autocomplete="username" spellcheck="false" required>
+                        </label>
+                        <label class="field">
+                            <span>Senha</span>
+                            <span class="password-wrap">
+                                <input id="input-password" type="password" autocomplete="current-password" required>
+                                <button type="button" id="btn-toggle-password" class="icon-btn"
+                                    aria-label="Mostrar senha"><i class="fas fa-eye"></i></button>
+                            </span>
+                        </label>
+                        <p id="login-error" class="form-error" role="alert" hidden></p>
+                        <button type="submit" id="btn-login" class="btn btn-primary btn-block btn-lg">Entrar</button>
+                    </form>
+                    <div class="license-alt">
+                        <span>Ainda não assina?</span>
+                        <button id="btn-contract-plan" class="btn btn-whatsapp" type="button">
+                            <i class="fab fa-whatsapp"></i>Assinar pelo WhatsApp
+                        </button>
+                    </div>
+                </div>
+
+                <div id="license-blocked" class="license-card" hidden>
+                    <div class="blocked-icon" id="blocked-icon"><i class="fas fa-hourglass-end"></i></div>
+                    <h1 id="blocked-title">Sua assinatura expirou</h1>
+                    <p class="lead" id="blocked-text"></p>
+                    <button id="btn-renew-whatsapp" class="btn btn-primary btn-block btn-lg" type="button">
+                        <i class="fab fa-whatsapp"></i>Renovar pelo WhatsApp
+                    </button>
+                    <button id="btn-recheck" class="btn btn-ghost btn-block" type="button">
+                        <i class="fas fa-rotate"></i>Já renovei, verificar de novo
+                    </button>
+                    <button id="btn-switch-account" class="btn btn-link" type="button">Entrar com outra conta</button>
+                </div>
+            </div>
+        </section>
+
+        <section id="view-empty" class="view empty-view" aria-label="Biblioteca vazia">
+            <div class="empty-card">
+                <div class="empty-copy">
+                    <h1>Monte sua biblioteca</h1>
+                    <p>Escolha a pasta de um curso. O Cursoflix encontra os módulos e as aulas, guarda seu progresso
+                        e liga cada PDF à aula que tem o mesmo nome.</p>
+                    <button class="btn btn-primary btn-lg" id="btn-empty-add" type="button">
+                        <i class="fas fa-folder-plus"></i>Escolher pasta do curso
+                    </button>
+                    <p class="empty-hint">Dica: você pode selecionar várias pastas de uma vez.</p>
+                </div>
+                <figure class="folder-tree">
+                    <figcaption>Como organizar a pasta</figcaption>
+                    <ul>
+                        <li class="is-folder">Curso de Excel
+                            <ul>
+                                <li class="is-folder">Módulo 1 - Primeiros passos
+                                    <ul>
+                                        <li class="is-video">01 Introdução.mp4</li>
+                                        <li class="is-pdf">01 Introdução.pdf</li>
+                                        <li class="is-video">02 Planilhas.mp4</li>
+                                    </ul>
+                                </li>
+                                <li class="is-folder">Módulo 2 - Fórmulas</li>
+                                <li class="is-image">capa.jpg</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </figure>
+            </div>
+        </section>
+
+        <section id="view-catalog" class="view catalog-view" aria-label="Início">
+            <div class="hero" id="hero">
+                <div class="hero-backdrop" id="hero-backdrop"></div>
+                <div class="hero-content">
+                    <p class="hero-kicker" id="hero-kicker">Continue de onde parou</p>
+                    <h1 id="hero-title"></h1>
+                    <p class="hero-subtitle" id="hero-subtitle"></p>
+                    <div class="hero-progress" id="hero-progress" hidden>
+                        <div class="bar"><span id="hero-progress-fill"></span></div>
+                        <span id="hero-progress-text"></span>
+                    </div>
+                    <div class="hero-actions">
+                        <button id="btn-hero-play" class="btn btn-primary btn-lg" type="button"><i
+                                class="fas fa-play"></i><span>Continuar aula</span></button>
+                        <button id="btn-hero-open" class="btn btn-glass btn-lg" type="button"><i
+                                class="fas fa-list-ul"></i>Ver curso</button>
+                    </div>
+                </div>
+                <dl class="hero-stats" id="hero-stats"></dl>
+            </div>
+            <div id="missing-notice" class="notice" hidden></div>
+            <div id="catalog-rows" class="rows"></div>
+        </section>
+
+        <section id="view-library" class="view page-view" aria-label="Biblioteca">
+            <div class="page-head">
+                <div>
+                    <h1>Biblioteca</h1>
+                    <p class="page-sub" id="library-count"></p>
+                </div>
+                <div class="segmented" id="library-sort" role="group" aria-label="Ordenar cursos">
+                    <button type="button" data-sort="recent" class="active">Recentes</button>
+                    <button type="button" data-sort="name">A–Z</button>
+                    <button type="button" data-sort="progress">Progresso</button>
+                </div>
+            </div>
+            <div class="course-grid" id="library-grid"></div>
+        </section>
+
+        <section id="view-search" class="view page-view" aria-label="Busca">
+            <div class="page-head">
+                <div>
+                    <h1 id="search-title">Busca</h1>
+                    <p class="page-sub" id="search-summary"></p>
+                </div>
+            </div>
+            <div id="search-courses" class="course-grid"></div>
+            <h2 class="section-title" id="search-lessons-title" hidden>Aulas</h2>
+            <div id="search-lessons" class="lesson-list"></div>
+        </section>
+
+        <section id="view-history" class="view page-view" aria-label="Histórico">
+            <div class="page-head">
+                <div>
+                    <h1>Histórico</h1>
+                    <p class="page-sub">As aulas que você abriu, da mais recente para a mais antiga.</p>
+                </div>
+            </div>
+            <div id="history-list" class="lesson-list"></div>
+        </section>
+
+        <section id="view-notes" class="view page-view" aria-label="Notas">
+            <div class="page-head">
+                <div>
+                    <h1>Notas</h1>
+                    <p class="page-sub">Marque um momento da aula com a tecla N e volte direto para ele.</p>
+                </div>
+                <div class="page-tools">
+                    <label class="search-field is-compact" for="notes-filter">
+                        <i class="fas fa-magnifying-glass" aria-hidden="true"></i>
+                        <input id="notes-filter" type="search" placeholder="Filtrar notas" autocomplete="off">
+                    </label>
+                    <button id="btn-copy-notes" class="btn btn-ghost" type="button"><i class="fas fa-copy"></i>Copiar
+                        todas</button>
+                </div>
+            </div>
+            <div id="notes-list" class="notes-groups"></div>
+        </section>
+
+        <section id="view-course" class="view course-view" aria-label="Curso">
+            <div class="course-hero">
+                <div class="course-backdrop" id="course-backdrop"></div>
+                <button class="btn btn-glass btn-back" id="btn-back-catalog" type="button"><i
+                        class="fas fa-arrow-left"></i>Voltar</button>
+                <div class="course-hero-content">
+                    <p class="course-category" id="course-category"></p>
+                    <h1 id="course-title"></h1>
+                    <ul class="course-meta" id="course-meta"></ul>
+                    <div class="course-progress">
+                        <div class="bar"><span id="course-progress-fill"></span></div>
+                        <span id="course-progress-text"></span>
+                    </div>
+                    <div class="course-actions">
+                        <button id="btn-course-play" class="btn btn-primary btn-lg" type="button"><i
+                                class="fas fa-play"></i><span>Começar curso</span></button>
+                        <button id="btn-course-more" class="btn btn-glass btn-icon btn-lg" type="button"
+                            aria-label="Mais opções do curso"><i class="fas fa-ellipsis"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div id="modules-list" class="modules-list"></div>
+        </section>
+
+        <section id="view-player" class="view player-view" aria-label="Player">
+            <div class="player-shell" id="player-shell">
+                <div class="video-stage" id="video-stage">
+                    <video id="video-player" playsinline preload="metadata"></video>
+                    <div class="player-loading" id="player-loading" hidden>
+                        <span class="spinner" aria-hidden="true"></span>
+                        <span id="player-loading-text">Carregando aula…</span>
+                    </div>
+                    <div class="center-feedback" id="center-feedback" aria-hidden="true">
+                        <span><i class="fas fa-play"></i></span>
+                    </div>
+                    <div class="next-up" id="next-up" hidden>
+                        <span class="next-up-label">Próxima aula em <strong id="next-up-count">8</strong>s</span>
+                        <strong class="next-up-title" id="next-up-title"></strong>
+                        <div class="next-up-actions">
+                            <button id="btn-next-now" class="btn btn-primary" type="button"><i
+                                    class="fas fa-play"></i>Assistir agora</button>
+                            <button id="btn-next-cancel" class="btn btn-ghost" type="button">Cancelar</button>
+                        </div>
+                    </div>
+                    <div class="player-ui" id="player-ui">
+                        <div class="player-top">
+                            <button class="btn btn-glass" id="btn-back-details" type="button"><i
+                                    class="fas fa-arrow-left"></i>Voltar ao curso</button>
+                            <div class="video-info">
+                                <span id="player-course-name"></span>
+                                <h2 id="player-video-name"></h2>
+                            </div>
+                            <button class="btn btn-glass" id="btn-toggle-lessons" type="button" aria-expanded="true"
+                                aria-controls="lessons-panel"><i class="fas fa-list-ul"></i><span>Aulas</span></button>
+                        </div>
+                <div class="player-controls">
+                    <div class="timeline" id="player-timeline" role="slider" tabindex="0"
+                        aria-label="Posição do vídeo" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+                        <div class="timeline-track">
+                            <div class="timeline-buffer" id="timeline-buffer"></div>
+                            <div class="timeline-progress" id="timeline-progress"></div>
+                            <div class="timeline-markers" id="timeline-markers"></div>
+                            <div class="timeline-thumb" id="timeline-thumb"></div>
+                        </div>
+                        <div class="timeline-hover" id="timeline-hover"></div>
+                        <div class="timeline-tooltip" id="timeline-tooltip"></div>
+                    </div>
+                    <div class="control-row">
+                        <button class="control-button" id="btn-play-pause" type="button" title="Reproduzir (Espaço)"
+                            aria-label="Reproduzir"><i class="fas fa-play"></i></button>
+                        <button class="control-button skip-button" id="btn-rewind" type="button"
+                            title="Voltar 10 segundos (←)" aria-label="Voltar 10 segundos"><i
+                                class="fas fa-rotate-left"></i><span>10</span></button>
+                        <button class="control-button skip-button" id="btn-forward" type="button"
+                            title="Avançar 10 segundos (→)" aria-label="Avançar 10 segundos"><i
+                                class="fas fa-rotate-right"></i><span>10</span></button>
+                        <div class="volume-group">
+                            <button class="control-button" id="btn-mute" type="button" title="Som (M)"
+                                aria-label="Ativar ou desativar som"><i class="fas fa-volume-high"></i></button>
+                            <input id="volume-slider" class="volume-slider" type="range" min="0" max="1" step="0.01"
+                                value="1" aria-label="Volume">
+                        </div>
+                        <div class="time-display">
+                            <span id="current-time">00:00</span>
+                            <span class="time-sep">/</span>
+                            <span id="duration-time">00:00</span>
+                        </div>
+                        <div class="control-spacer"></div>
+                        <button class="control-button control-text" id="btn-add-note" type="button"
+                            title="Criar nota neste momento (N)"><i class="fas fa-note-sticky"></i><span>Nota</span></button>
+                        <button class="control-button control-text" id="btn-toggle-pdf" type="button"
+                            title="Abrir material da aula (P)" hidden><i class="fas fa-file-pdf"></i><span>Material</span></button>
+                        <div class="speed-control">
+                            <button class="control-button control-text" id="btn-speed" type="button"
+                                title="Velocidade (Shift + &lt; e &gt;)" aria-haspopup="menu">1x</button>
+                            <div class="speed-menu" id="speed-menu" role="menu">
+                                <button type="button" data-speed="0.5">0.5x</button>
+                                <button type="button" data-speed="0.75">0.75x</button>
+                                <button type="button" data-speed="1">1x</button>
+                                <button type="button" data-speed="1.25">1.25x</button>
+                                <button type="button" data-speed="1.5">1.5x</button>
+                                <button type="button" data-speed="1.75">1.75x</button>
+                                <button type="button" data-speed="2">2x</button>
+                            </div>
+                        </div>
+                        <button class="control-button control-text" id="btn-next-lesson" type="button"
+                            title="Próxima aula (Shift + N)"><span>Próxima</span><i class="fas fa-forward-step"></i></button>
+                        <button class="control-button" id="btn-fullscreen" type="button" title="Tela cheia (F)"
+                            aria-label="Tela cheia"><i class="fas fa-expand"></i></button>
+                    </div>
+                </div>
+                    </div>
+                </div>
+                <div class="pdf-pane" id="pdf-pane" hidden>
+                    <div class="pdf-pane-head">
+                        <span><i class="fas fa-file-pdf"></i>Material da aula</span>
+                        <button class="icon-btn" id="btn-close-pdf" type="button" aria-label="Fechar material"><i
+                                class="fas fa-xmark"></i></button>
+                    </div>
+                    <iframe id="pdf-viewer" title="Material da aula"></iframe>
+                </div>
+                <aside class="lessons-panel" id="lessons-panel" aria-label="Aulas do módulo">
+                    <div class="lessons-head">
+                        <span>Módulo atual</span>
+                        <h2 id="player-module-name">Aulas</h2>
+                    </div>
+                    <div id="player-lessons-list" class="lessons-list"></div>
+                </aside>
+            </div>
+        </section>
+    </main>
+
+    <div id="context-menu" class="menu context-menu" role="menu" hidden></div>
+
+    <div id="course-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="course-modal-title">
+        <div class="modal-box modal-course">
+            <div class="cover-picker">
+                <div class="cover-preview" id="cover-preview"><span id="cover-monogram"></span></div>
+                <div class="cover-actions">
+                    <button id="btn-select-cover" class="btn btn-ghost" type="button"><i class="fas fa-image"></i>Escolher
+                        capa</button>
+                    <button id="btn-clear-cover" class="btn btn-link" type="button" hidden>Remover capa</button>
+                </div>
+            </div>
+            <div class="modal-form">
+                <p class="modal-step" id="course-modal-step" hidden></p>
+                <h2 id="course-modal-title">Novo curso</h2>
+                <p class="modal-path" id="course-modal-path"></p>
+                <label class="field">
+                    <span>Nome do curso</span>
+                    <input id="course-name-input" type="text" maxlength="120">
+                </label>
+                <label class="field">
+                    <span>Categoria</span>
+                    <select id="course-category-select"></select>
+                </label>
+                <p class="form-error" id="course-modal-error" role="alert" hidden></p>
+                <div class="modal-actions">
+                    <button class="btn btn-ghost" id="btn-cancel-course" type="button">Cancelar</button>
+                    <button class="btn btn-primary" id="btn-save-course" type="button"><i class="fas fa-check"></i>Salvar
+                        curso</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="note-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="note-modal-title">
+        <div class="modal-box">
+            <h2 id="note-modal-title">Nova nota</h2>
+            <p class="modal-sub" id="note-time-label">Em 00:00</p>
+            <textarea id="note-text" maxlength="5000"
+                placeholder="O que você quer lembrar deste momento da aula?"></textarea>
+            <p class="modal-hint">Ctrl + Enter salva a nota.</p>
+            <div class="modal-actions">
+                <button id="btn-cancel-note" class="btn btn-ghost" type="button">Cancelar</button>
+                <button id="btn-save-note" class="btn btn-primary" type="button"><i class="fas fa-check"></i>Salvar
+                    nota</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="confirm-modal" class="modal-overlay" role="alertdialog" aria-modal="true"
+        aria-labelledby="confirm-title" aria-describedby="confirm-text">
+        <div class="modal-box modal-small">
+            <h2 id="confirm-title"></h2>
+            <p class="modal-sub" id="confirm-text"></p>
+            <div class="modal-actions">
+                <button id="btn-confirm-cancel" class="btn btn-ghost" type="button">Cancelar</button>
+                <button id="btn-confirm-ok" class="btn btn-primary" type="button">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="themes-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="themes-title">
+        <div class="modal-box modal-wide">
+            <h2 id="themes-title">Aparência</h2>
+            <p class="modal-sub">Temas mudam só cores e estilos. Você pode criar o seu com um arquivo
+                <code>theme.css</code> e importar a pasta aqui.</p>
+            <div class="theme-grid" id="theme-grid"></div>
+            <div class="modal-actions">
+                <button id="btn-import-theme" class="btn btn-ghost" type="button"><i
+                        class="fas fa-file-import"></i>Importar tema</button>
+                <button id="btn-close-themes" class="btn btn-primary" type="button">Pronto</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="shortcuts-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="shortcuts-title">
+        <div class="modal-box">
+            <h2 id="shortcuts-title">Atalhos do teclado</h2>
+            <dl class="shortcut-list">
+                <div><dt><kbd>Espaço</kbd> <kbd>K</kbd></dt><dd>Reproduzir ou pausar</dd></div>
+                <div><dt><kbd>←</kbd> <kbd>→</kbd></dt><dd>Voltar ou avançar 10 segundos</dd></div>
+                <div><dt><kbd>↑</kbd> <kbd>↓</kbd></dt><dd>Aumentar ou diminuir o volume</dd></div>
+                <div><dt><kbd>M</kbd></dt><dd>Ativar ou desativar o som</dd></div>
+                <div><dt><kbd>F</kbd></dt><dd>Tela cheia</dd></div>
+                <div><dt><kbd>N</kbd></dt><dd>Criar nota no momento atual</dd></div>
+                <div><dt><kbd>P</kbd></dt><dd>Abrir ou fechar o material da aula</dd></div>
+                <div><dt><kbd>Shift</kbd> + <kbd>N</kbd></dt><dd>Próxima aula</dd></div>
+                <div><dt><kbd>Shift</kbd> + <kbd>&lt;</kbd> <kbd>&gt;</kbd></dt><dd>Diminuir ou aumentar a velocidade</dd></div>
+                <div><dt><kbd>Esc</kbd></dt><dd>Sair da tela cheia ou voltar ao curso</dd></div>
+                <div><dt><kbd>Ctrl</kbd> + <kbd>K</kbd></dt><dd>Buscar cursos e aulas</dd></div>
+            </dl>
+            <div class="modal-actions">
+                <button class="btn btn-primary" type="button" data-close-modal>Entendi</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="whats-new-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="whats-new-title">
+        <div class="modal-box">
+            <h2 id="whats-new-title">Novidades da versão</h2>
+            <ul class="whats-new-list">
+                <li><i class="fas fa-shield-halved"></i>
+                    <div><strong>Login que não cai</strong>A sessão se renova sozinha e o app funciona até 7 dias sem
+                        internet.</div>
+                </li>
+                <li><i class="fas fa-magnifying-glass"></i>
+                    <div><strong>Busca e biblioteca</strong>Encontre cursos e aulas com Ctrl + K e veja todos os cursos
+                        em um só lugar.</div>
+                </li>
+                <li><i class="fas fa-forward"></i>
+                    <div><strong>Próxima aula automática</strong>Ao terminar uma aula, a próxima começa sozinha — dá
+                        para cancelar.</div>
+                </li>
+                <li><i class="fas fa-keyboard"></i>
+                    <div><strong>Atalhos e tela cheia</strong>Controle o player pelo teclado. Veja a lista em Atalhos
+                        do teclado.</div>
+                </li>
+                <li><i class="fas fa-palette"></i>
+                    <div><strong>Temas</strong>Troque as cores do app em Aparência ou importe um tema seu.</div>
+                </li>
+                <li><i class="fas fa-file-pdf"></i>
+                    <div><strong>Materiais do módulo</strong>PDFs soltos na pasta do módulo aparecem como material de
+                        apoio.</div>
+                </li>
+            </ul>
+            <div class="modal-actions">
+                <button class="btn btn-primary" type="button" data-close-modal>Continuar</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="pdf-modal" class="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="pdf-modal-title">
+        <div class="modal-box modal-pdf">
+            <div class="pdf-modal-head">
+                <h2 id="pdf-modal-title">Material</h2>
+                <button class="icon-btn" type="button" data-close-modal aria-label="Fechar material"><i
+                        class="fas fa-xmark"></i></button>
+            </div>
+            <iframe id="pdf-modal-frame" title="Material de apoio"></iframe>
+        </div>
+    </div>
+
+    <div id="update-toast" class="update-toast" aria-live="polite" hidden>
+        <div class="update-icon"><i class="fas fa-cloud-arrow-down"></i></div>
+        <div class="update-body">
+            <strong id="update-title">Nova versão do Cursoflix</strong>
+            <p id="update-message">Baixe e instale quando quiser.</p>
+            <div id="update-progress" class="update-progress" hidden>
+                <div class="bar"><span id="update-progress-bar"></span></div>
+                <span id="update-progress-percent">0%</span>
+            </div>
+        </div>
+        <div class="update-actions">
+            <button id="btn-download-update" class="btn btn-primary" type="button"><i
+                    class="fas fa-download"></i>Baixar e instalar</button>
+            <button id="btn-dismiss-update" class="icon-btn" type="button" aria-label="Lembrar depois"><i
+                    class="fas fa-xmark"></i></button>
+        </div>
+    </div>
+
+    <div id="toasts" class="toasts" aria-live="polite"></div>
+
+    <script src="renderer.js"></script>
+</body>
+
+</html>
