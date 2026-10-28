@@ -4,9 +4,15 @@
 
 O Cursoflix é um app de desktop para assistir aos cursos que você já tem no computador como se fosse uma plataforma de streaming: módulos organizados, progresso salvo, notas no momento exato da aula e o PDF de apoio ao lado do vídeo.
 
-Este repositório tem **só a parte visual** do app, para você deixar o Cursoflix com a sua cara: cores, temas e estilos. A lógica do app (assinatura, leitura das pastas, reprodução dos arquivos e atualizações) não faz parte daqui.
+Este repositório tem o instalador oficial do app (em **Releases**) e o código da **parte visual**, para você deixar o Cursoflix com a sua cara: cores, temas e estilos. A lógica do app (assinatura, leitura das pastas e reprodução dos arquivos) não está aqui.
 
 > **Para usar qualquer personalização você precisa do app oficial e de uma assinatura ativa.** Quer assinar? [Fale no WhatsApp](https://wa.me/5547992201382?text=Quero%20assinar%20o%20Cursoflix).
+
+## Baixar o app
+
+O instalador para Windows está em [Releases](https://github.com/gabrielsoares97/cursoflix-updates/releases/latest) (`Cursoflix-Setup-<versão>-x64.exe`). Depois de instalado, o app se atualiza sozinho a partir daqui.
+
+O instalador não tem assinatura digital, então o Windows pode mostrar "editor desconhecido". Clique em **Mais informações → Executar assim mesmo**.
 
 ## Ver a interface no navegador
 
